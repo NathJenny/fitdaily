@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DuoSport</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
@@ -17,24 +17,84 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            justify-content: flex-start; /* Aligne le contenu en haut pour laisser la place au header */
+            height: 100dvh;
+            min-height: 100vh;
             margin: 0;
             overflow: hidden;
+            position: relative;
+            padding-top: 80px; /* Espace pour le header fixe + gap */
         }
+
+        /* --- NOUVEAU : En-tête Compact Fixe --- */
+        #appHeader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px; /* Hauteur définie */
+            background: rgba(18, 18, 18, 0.9);
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            z-index: 20;
+            backdrop-filter: blur(5px);
+        }
+
+        /* --- NOUVEAU : Logo Central --- */
+        .app-logo {
+            max-height: 30px; /* Rétréci pour tenir dans le header */
+            width: auto;
+            border-radius: 50%; /* Transforme le carré icon.png en cercle */
+        }
+
+        /* --- NOUVEAU : Éléments Rétrécis du Header --- */
+        .header-streak {
+            font-size: 16px; /* Réduit */
+            font-weight: bold;
+            color: #ffffff;
+            background: rgba(30, 30, 30, 0.8);
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #333;
+        }
+
+        .btn-icon-small {
+            background: rgba(30, 30, 30, 0.8);
+            color: #888;
+            border: 1px solid #333;
+            width: 34px; /* Shrunk */
+            height: 34px; /* Shrunk */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px; /* Smaller icon */
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-icon-small:hover { color: #fff; border-color: #555; }
+
+        /* Conteneur principal (compacté) */
         .container {
             background: #1e1e1e;
-            padding: 40px 30px;
+            padding: 30px 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 90%;
-            width: 350px;
+            max-width: 85%;
+            width: 320px;
             z-index: 10;
         }
         h1 { 
             color: #ffffff; 
-            font-size: 22px;
-            margin-bottom: 30px;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 20px;
             font-weight: 600;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -42,10 +102,10 @@
         .exercise-box {
             background: #2a2a2a;
             border: 1px solid #333;
-            padding: 25px 20px;
+            padding: 20px 15px;
             border-radius: 12px;
-            margin: 20px 0 30px 0;
-            font-size: 26px;
+            margin: 15px 0 25px 0;
+            font-size: 22px;
             font-weight: bold;
             color: #4ade80;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
@@ -54,8 +114,8 @@
             background-color: #4ade80;
             color: #121212;
             border: none;
-            padding: 16px 32px;
-            font-size: 18px;
+            padding: 14px 24px;
+            font-size: 16px;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
@@ -76,77 +136,26 @@
             box-shadow: none;
             transform: none;
         }
-        
-        /* Conteneurs pour les boutons en bas */
-        .bottom-left {
-            position: fixed;
-            bottom: 25px;
-            left: 25px;
-        }
-        .bottom-right {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Style des petits boutons (Test et Reset) */
-        .btn-small {
-            background: rgba(30, 30, 30, 0.8);
-            color: #888;
-            border: 1px solid #333;
-            padding: 10px 15px;
-            border-radius: 30px;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .btn-small:hover { color: #fff; border-color: #555; }
-
-        .streak {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffffff;
-            background: rgba(30, 30, 30, 0.8);
-            padding: 10px 18px;
-            border-radius: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid #333;
-        }
-        
-        .btn-icon {
-            padding: 10px;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body>
+
+    <header id="appHeader">
+        <button id="resetStreakBtn" class="btn-icon-small" title="Remettre à zéro">🔄</button>
+        
+        <div id="logoContainer">
+            <img src="icon.png" alt="DuoSport Logo" class="app-logo">
+        </div>
+        
+        <div id="topStreak" class="header-streak">
+            🔥 <span id="streakCount">0</span>
+        </div>
+    </header>
 
     <div class="container">
         <h1>Entraînement du Jour</h1>
         <div class="exercise-box" id="exerciseDisplay">...</div>
         <button id="doneBtn">J'ai fait mon sport !</button>
-    </div>
-
-    <div class="bottom-left">
-        <button id="testNotifBtn" class="btn-small">🔔 Test Notif</button>
-    </div>
-
-    <div class="bottom-right">
-        <button id="resetStreakBtn" class="btn-small btn-icon" title="Remettre à zéro">🔄</button>
-        <div class="streak">🔥 <span id="streakCount">0</span></div>
     </div>
 
     <script>
@@ -200,7 +209,6 @@
         function verrouillerBouton() {
             doneBtn.innerText = "Fait ✅";
             doneBtn.disabled = true;
-            // Le setTimeout de test a été supprimé ici !
         }
 
         doneBtn.addEventListener('click', () => {
@@ -236,23 +244,13 @@
             }
         }
 
-        // --- NOUVEAU : Bouton Test Notification ---
-        document.getElementById('testNotifBtn').addEventListener('click', () => {
-            if (Notification.permission === "granted") {
-                const phraseAleatoire = phrasesCindy[Math.floor(Math.random() * phrasesCindy.length)];
-                new Notification("Test Rappel 🚨", { body: phraseAleatoire });
-            } else {
-                alert("Tu dois d'abord autoriser les notifications !");
-                Notification.requestPermission();
-            }
-        });
+        // --- Le bouton Test Notif a été supprimé ! ---
 
-        // --- NOUVEAU : Bouton Reset Compteur ---
+        // Bouton Reset Compteur (inchangé mais déplacé top-left)
         document.getElementById('resetStreakBtn').addEventListener('click', () => {
             if (confirm("Es-tu sûr de vouloir remettre ta série de jours à zéro ? 😢")) {
                 localStorage.setItem('sport_streak', 0);
                 streakCount.innerText = "0";
-                // Optionnel : on oublie aussi l'entraînement d'aujourd'hui pour pouvoir le refaire
                 localStorage.removeItem('last_workout_date');
                 doneBtn.disabled = false;
                 doneBtn.innerText = "J'ai fait mon sport !";
