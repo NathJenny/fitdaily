@@ -17,70 +17,100 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Aligne le contenu en haut pour laisser la place au header */
+            justify-content: flex-start;
             height: 100dvh;
             min-height: 100vh;
             margin: 0;
             overflow: hidden;
             position: relative;
-            padding-top: 80px; /* Espace pour le header fixe + gap */
+            padding-top: 70px; /* Espace pour le header compact */
         }
 
-        /* --- NOUVEAU : En-tête Compact Fixe --- */
+        /* --- NOUVEAU : Header Compact Fixe --- */
         #appHeader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 50px; /* Hauteur définie */
+            height: 55px; /* Légèrement plus haut */
             background: rgba(18, 18, 18, 0.9);
             border-bottom: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; /* Grille pour centrage parfait du logo */
             align-items: center;
             padding: 0 15px;
             z-index: 20;
             backdrop-filter: blur(5px);
         }
 
-        /* --- NOUVEAU : Logo Central --- */
-        .app-logo {
-            max-height: 30px; /* Rétréci pour tenir dans le header */
-            width: auto;
-            border-radius: 50%; /* Transforme le carré icon.png en cercle */
-        }
-
-        /* --- NOUVEAU : Éléments Rétrécis du Header --- */
-        .header-streak {
-            font-size: 16px; /* Réduit */
-            font-weight: bold;
-            color: #ffffff;
-            background: rgba(30, 30, 30, 0.8);
-            padding: 5px 10px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            border: 1px solid #333;
-        }
-
-        .btn-icon-small {
-            background: rgba(30, 30, 30, 0.8);
-            color: #888;
-            border: 1px solid #333;
-            width: 34px; /* Shrunk */
-            height: 34px; /* Shrunk */
-            border-radius: 50%;
+        /* --- Logo Central --- */
+        #logoContainer {
+            grid-column: 2;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px; /* Smaller icon */
-            cursor: pointer;
-            transition: all 0.2s;
         }
-        .btn-icon-small:hover { color: #fff; border-color: #555; }
+        .app-logo {
+            max-height: 32px;
+            width: auto;
+            border-radius: 50%;
+        }
 
-        /* Conteneur principal (compacté) */
+        /* --- NOUVEAU : Menu Burger à Droite --- */
+        #menuBtn {
+            grid-column: 3;
+            justify-self: end;
+            background: transparent;
+            color: #fff;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #menuBtn:hover { background-color: rgba(255,255,255,0.1); }
+
+        /* --- NOUVEAU : Menu déroulant caché --- */
+        #appMenu {
+            position: absolute;
+            top: 60px; /* Juste sous le header */
+            right: 15px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 30;
+            width: 160px;
+            display: flex;
+            flex-direction: column;
+            padding: 5px 0;
+            transform-origin: top right;
+            transition: transform 0.2s, opacity 0.2s;
+            transform: scale(0.9);
+            opacity: 0;
+            pointer-events: none; /* Cache le menu */
+        }
+        #appMenu.active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto; /* Affiche le menu */
+        }
+        .menu-item {
+            background: transparent;
+            color: #fff;
+            border: none;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 14px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .menu-item:hover { background-color: rgba(255,255,255,0.05); }
+
+        /* Conteneur principal */
         .container {
             background: #1e1e1e;
             padding: 30px 20px;
@@ -104,13 +134,30 @@
             border: 1px solid #333;
             padding: 20px 15px;
             border-radius: 12px;
-            margin: 15px 0 25px 0;
+            margin: 15px 0 20px 0; /* Marge réduite pour rapprocher la flamme */
             font-size: 22px;
             font-weight: bold;
-            color: #4ade80;
+            color: #fff; /* Texte principal blanc */
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
-        button {
+
+        /* --- NOUVEAU : Emplacement de la Flamme sous l'exercice --- */
+        #streakDisplay {
+            margin-bottom: 25px; /* Espace avant le bouton */
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff; /* Texte blanc pour contraste */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: fadeInStreak 0.5s ease-out; /* Animation douce */
+        }
+        #streakCount {
+            color: #4ade80; /* Le nombre de jours est vert néon */
+        }
+
+        button#doneBtn {
             background-color: #4ade80;
             color: #121212;
             border: none;
@@ -123,38 +170,50 @@
             box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2);
             width: 100%;
         }
-        button:hover { 
+        button#doneBtn:hover { 
             background-color: #22c55e; 
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(74, 222, 128, 0.3);
         }
-        button:active { transform: translateY(1px); }
-        button:disabled {
+        button#doneBtn:active { transform: translateY(1px); }
+        button#doneBtn:disabled {
             background-color: #333;
             color: #777;
             cursor: not-allowed;
             box-shadow: none;
             transform: none;
         }
+
+        @keyframes fadeInStreak {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
     <header id="appHeader">
-        <button id="resetStreakBtn" class="btn-icon-small" title="Remettre à zéro">🔄</button>
+        <div style="width: 32px;"></div>
         
         <div id="logoContainer">
             <img src="icon.png" alt="DuoSport Logo" class="app-logo">
         </div>
         
-        <div id="topStreak" class="header-streak">
-            🔥 <span id="streakCount">0</span>
+        <button id="menuBtn">☰</button>
+
+        <div id="appMenu">
+            <button class="menu-item" id="resetStreakBtn">Réinitialiser la Série 🔥</button>
         </div>
     </header>
 
     <div class="container">
         <h1>Entraînement du Jour</h1>
         <div class="exercise-box" id="exerciseDisplay">...</div>
+
+        <div id="streakDisplay">
+            🔥 <span id="streakCount">0</span> jour(s) d'affilée
+        </div>
+
         <button id="doneBtn">J'ai fait mon sport !</button>
     </div>
 
@@ -178,6 +237,10 @@
         const exerciseDisplay = document.getElementById('exerciseDisplay');
         const doneBtn = document.getElementById('doneBtn');
         const streakCount = document.getElementById('streakCount');
+        const menuBtn = document.getElementById('menuBtn');
+        const appMenu = document.getElementById('appMenu');
+        const resetStreakBtn = document.getElementById('resetStreakBtn');
+
         const today = new Date().toISOString().split('T')[0];
 
         function initApp() {
@@ -205,6 +268,17 @@
 
             planifierNotifications();
         }
+
+        // --- NOUVEAU : Logique Menu Burger ---
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Empêche la fermeture immédiate
+            appMenu.classList.toggle('active');
+        });
+
+        // Ferme le menu si on clique n'importe où ailleurs
+        document.addEventListener('click', () => {
+            appMenu.classList.remove('active');
+        });
 
         function verrouillerBouton() {
             doneBtn.innerText = "Fait ✅";
@@ -234,7 +308,6 @@
             });
         });
 
-        // Fonction pour envoyer la notification (utilisée par le programmateur aléatoire)
         function envoyerRappel() {
             if (localStorage.getItem('last_workout_date') === today) return;
 
@@ -244,17 +317,16 @@
             }
         }
 
-        // --- Le bouton Test Notif a été supprimé ! ---
-
-        // Bouton Reset Compteur (inchangé mais déplacé top-left)
-        document.getElementById('resetStreakBtn').addEventListener('click', () => {
-            if (confirm("Es-tu sûr de vouloir remettre ta série de jours à zéro ? 😢")) {
+        // --- Logique Reset déplacée dans le menu contextuel ---
+        resetStreakBtn.addEventListener('click', () => {
+            if (confirm("Es-tu sûr de vouloir remettre ta série de jours à zéro ? 😢 Cindy ne serait pas fière...")) {
                 localStorage.setItem('sport_streak', 0);
                 streakCount.innerText = "0";
                 localStorage.removeItem('last_workout_date');
                 doneBtn.disabled = false;
                 doneBtn.innerText = "J'ai fait mon sport !";
             }
+            appMenu.classList.remove('active'); // Ferme le menu après reset
         });
 
         function planifierNotifications() {
