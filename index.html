@@ -247,13 +247,13 @@
             { id: 'str_30', icon: '🏆', title: 'Guerrier', desc: '30 jours de série' },
             { id: 'str_40', icon: '🚀', title: 'Inarrêtable', desc: '40 jours de série' },
             { id: 'str_50', icon: '👑', title: 'Légende', desc: '50 jours de série' },
-            { id: 'tot_10', icon: '🥉', title: 'Apprenti', desc: '10 sports au total' },
-            { id: 'tot_25', icon: '🥈', title: 'Amateur', desc: '25 sports au total' },
-            { id: 'tot_50', icon: '🥇', title: 'Pro', desc: '50 sports au total' },
-            { id: 'tot_100', icon: '💎', title: 'Vétéran', desc: '100 sports au total' },
-            { id: 'early', icon: '🌅', title: 'Lève-tôt', desc: 'Sport avant 8h' },
-            { id: 'late', icon: '🦉', title: 'Oiseau Nuit', desc: 'Sport après 20h' },
-            { id: 'we', icon: '🎉', title: 'Sans Repos', desc: 'Sport le weekend' }
+            { id: 'tot_10', icon: '🥉', title: 'Apprenti', desc: '10 séances au total' },
+            { id: 'tot_25', icon: '🥈', title: 'Amateur', desc: '25 séances au total' },
+            { id: 'tot_50', icon: '🥇', title: 'Pro', desc: '50 séances au total' },
+            { id: 'tot_100', icon: '💎', title: 'Vétéran', desc: '100 séances au total' },
+            { id: 'early', icon: '🌅', title: 'Lève-tôt', desc: 'Séance avant 8h' },
+            { id: 'late', icon: '🦉', title: 'Oiseau Nuit', desc: 'Séance après 20h' },
+            { id: 'we', icon: '🎉', title: 'Sans Repos', desc: 'Séance le weekend' }
         ];
 
         const todayStr = new Date().toISOString().split('T')[0];
@@ -282,17 +282,14 @@
             rerollCount = parseInt(localStorage.getItem('reroll_count') || 0);
             updateRerollUI();
 
-            // NOUVEAU: On sauvegarde un dictionnaire complet des exercices générés aujourd'hui par difficulté
             let savedDate = localStorage.getItem('exercise_date');
             let savedDailyExercisesObj = JSON.parse(localStorage.getItem('daily_workouts_v2') || '{}');
 
             if (savedDate !== todayStr || Object.keys(savedDailyExercisesObj).length === 0) {
-                // Nouveau jour, on réinitialise l'objet
                 savedDailyExercisesObj = {};
                 localStorage.setItem('exercise_date', todayStr);
             }
 
-            // Si on n'a pas encore généré d'exercices pour cette difficulté aujourd'hui, on le fait
             if (!savedDailyExercisesObj[savedDiff]) {
                 savedDailyExercisesObj[savedDiff] = generateExercisesForDiff(savedDiff);
                 localStorage.setItem('daily_workouts_v2', JSON.stringify(savedDailyExercisesObj));
@@ -310,7 +307,6 @@
             }
         }
 
-        // --- NOUVEAU: Fonction isolée pour générer les 3 exercices d'une difficulté donnée ---
         function generateExercisesForDiff(difficulty) {
             let pool = [...exercicesDB[difficulty]];
             let selection = [];
@@ -320,7 +316,6 @@
                 selection.push(pool.splice(randomIndex, 1)[0]);
             }
 
-            // Tri pour les chronos en dernier
             const regex = /\((\d+)\s*(sec|min|minute)s?\)/i;
             selection.sort((a, b) => {
                 const aHasTimer = regex.test(a);
@@ -373,7 +368,6 @@
             }
         }
 
-        // --- Écouteur du changement de difficulté ---
         document.getElementById('diffSelect').addEventListener('change', (e) => {
             const newDiff = e.target.value;
             localStorage.setItem('user_difficulty', newDiff);
@@ -381,7 +375,6 @@
             if (localStorage.getItem('last_workout_date') !== todayStr) {
                 let savedDailyExercisesObj = JSON.parse(localStorage.getItem('daily_workouts_v2') || '{}');
                 
-                // Si pas d'exercice mémorisé pour cette difficulté, on les génère
                 if (!savedDailyExercisesObj[newDiff]) {
                     savedDailyExercisesObj[newDiff] = generateExercisesForDiff(newDiff);
                     localStorage.setItem('daily_workouts_v2', JSON.stringify(savedDailyExercisesObj));
@@ -392,7 +385,6 @@
             }
         });
 
-        // --- Écouteur du Reroll (le seul moyen de forcer un nouveau tirage) ---
         document.getElementById('rerollBtn').addEventListener('click', () => {
             if (localStorage.getItem('last_workout_date') === todayStr) {
                 alert("Tu as déjà fait ton sport aujourd'hui !"); return;
@@ -405,7 +397,6 @@
                 const currentDiff = document.getElementById('diffSelect').value;
                 let savedDailyExercisesObj = JSON.parse(localStorage.getItem('daily_workouts_v2') || '{}');
                 
-                // On FORCE le tirage de nouveaux exercices et on écrase la sauvegarde
                 savedDailyExercisesObj[currentDiff] = generateExercisesForDiff(currentDiff);
                 localStorage.setItem('daily_workouts_v2', JSON.stringify(savedDailyExercisesObj));
                 
