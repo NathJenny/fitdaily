@@ -635,7 +635,7 @@
         document.addEventListener('click', () => { document.getElementById('appMenu').classList.remove('active'); });
 
         document.getElementById('resetStreakBtn').addEventListener('click', () => {
-            if (confirm("Remettre la série à zéro ? 😢 Cindy va être très déçue...")) {
+            if (confirm("Remettre la série à zéro ? 😢 Cindy va être très déçue.")) {
                 localStorage.setItem('sport_streak', 0);
                 localStorage.removeItem('last_workout_date');
                 location.reload();
